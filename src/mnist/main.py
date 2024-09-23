@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get("/files")
 async def file_list():
-    conn = pymysql.connect(host='172.18.0.1', port = 53306,
+    conn = pymysql.connect(host='172.17.0.1', port = 53306,
                             user = 'mnist', password = '1234',
                             database = 'mnistdb',
                             cursorclass=pymysql.cursors.DictCursor)
@@ -30,7 +30,7 @@ async def create_upload_file(file: UploadFile):
     file_ext = file.content_type.split('/')[-1]
 
     # 디렉토리가 없으면 오류, 코드에서 확인 및 만들기 추가
-    upload_dir = "/home/diginori/code/mnist/img"
+    upload_dir = "/home/joo/code/mnist/img"
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir)
     import uuid
@@ -43,7 +43,7 @@ async def create_upload_file(file: UploadFile):
     sql = "INSERT INTO image_processing(file_name, file_path, request_time, request_user) VALUES(%s, %s, %s, %s)"
     import jigeum.seoul 
     from mnist.db import dml
-    insert_row = dml(sql, file_name, file_full_path, jigeum.seoul.now(), 'n99')
+    insert_row = dml(sql, file_name, file_full_path, jigeum.seoul.now(), 'n72')
     
     return {
             "filename": file.filename,
