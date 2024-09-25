@@ -47,3 +47,4 @@ pythonpath = "src"
 
 [project.scripts]
 ml-worker = 'mnist.worker:run'
+ml-noti = 'mnist.worker:send_line_noti'

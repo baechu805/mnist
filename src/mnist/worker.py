@@ -89,11 +89,13 @@ def run():
 
   # STEP 3
   # LINE 으로 처리 결과 전송
-
+  
+  send_line_noti(file_name,presult)
   print(jigeum.seoul.now())
 
+def send_line_noti(file_name='test', presult='-1'):
   url = "https://notify-api.line.me/api/notify"
-  KEY =  os.getenv('API_TOKEN','false')
+  KEY =  os.getenv('API_TOKEN','Xo5pelAiGVrtcW7WfqGKvWGOeikSLDZTzJP7b6IaV5z')
   headers = {"Authorization": "Bearer " + KEY}
   data = {"message": f"성공적으로 저장했습니다!{file_name} 예측결과:{presult}"}
   headers = {"Authorization": "Bearer " + KEY}
