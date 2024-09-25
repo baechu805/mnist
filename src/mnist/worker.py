@@ -22,8 +22,13 @@ def get_job_img_task():
     else:
         return None
 # 모델 로드
-model = load_model('/home/joo/code/mnist/note/mnist240924.keras')  # 학습된 모델 파일 경로
+def get_model():
+    f = __file__
+    dir_name = os.path.dirname(f)
+    model_path = os.path.join(dir_name,"mnist240924.keras")
+    model = load_model(model_path)
 
+    return model
 # 사용자 이미지 불러오기 및 전처리
 def preprocess_image(image_path):
     img = Image.open(image_path).convert('L')  # 흑백 이미지로 변환
@@ -39,6 +44,7 @@ def preprocess_image(image_path):
 
 # 예측
 def predict_digit(image_path):
+    model = get_model()
     img = preprocess_image(image_path)
     prediction = model.predict(img)
     digit = np.argmax(prediction)
