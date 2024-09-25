@@ -45,6 +45,7 @@ def preprocess_image(image_path):
 # 예측
 def predict_digit(image_path):
     model = get_model()
+    print(f"****************{image_path}")
     img = preprocess_image(image_path)
     prediction = model.predict(img)
     digit = np.argmax(prediction)
@@ -62,7 +63,7 @@ def prediction(file_path, num):
     file_path=job['file_path']
     presult = predict_digit(file_path)
     dml(sql, presult, jigeum.seoul.now(), num)
-
+    print(f"*********************** {presult}")
     return presult
 
 
