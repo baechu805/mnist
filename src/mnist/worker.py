@@ -22,7 +22,7 @@ def get_job_img_task():
     else:
         return None
 # 모델 로드
-model = load_model('home/joo/code/mnist/note/mnist240924.keras')  # 학습된 모델 파일 경로
+model = load_model('/home/joo/code/mnist/note/mnist240924.keras')  # 학습된 모델 파일 경로
 
 # 사용자 이미지 불러오기 및 전처리
 def preprocess_image(image_path):
@@ -78,18 +78,17 @@ def run():
   # STEP 2
   # RANDOM 으로 0 ~ 9 중 하나 값을 prediction_result 컬럼에 업데이트
   # 동시에 prediction_model, prediction_time 도 업데이트
-  presutl = prediction(file_path, num)
+  presult = prediction(file_path, num)
 
   # STEP 3
   # LINE 으로 처리 결과 전송
-  send_line_noti(file_name, presutl)
 
   print(jigeum.seoul.now())
 
   url = "https://notify-api.line.me/api/notify"
   KEY =  os.getenv('API_TOKEN','false')
   headers = {"Authorization": "Bearer " + KEY}
-  data = {"message": "성공적으로 저장했습니다!"}
+  data = {"message": f"성공적으로 저장했습니다!{file_name} 예측결과:{presult}"}
   headers = {"Authorization": "Bearer " + KEY}
   response = requests.post(url, data=data, headers=headers)
   print(response.text)
