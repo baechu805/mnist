@@ -3,16 +3,19 @@ from fastapi import FastAPI, File, UploadFile
 import os
 import pymysql.cursors
 import json
+from datetime import datetime
 
 app = FastAPI()
 
 
 @app.get("/files")
 async def file_list():
-    conn = pymysql.connect(host='172.17.0.1', port = 53306,
-                            user = 'mnist', password = '1234',
-                            database = 'mnistdb',
-                            cursorclass=pymysql.cursors.DictCursor)
+    conn = pymysql.connect(host=os.getenv('DB', '172.17.0.1'),
+                                 user='mnist',
+                                 password='1234',
+                                 database='mnistdb',
+                                 port= int(os.getenv('DB_PORT', 53306)),
+                                 cursorclass=pymysql.cursors.DictCursor)
     with conn:
         with conn.cursor() as cursor:
             sql = "SELECT * FROM image_processing WHERE prediction_time IS NULL ORDER BY num"
@@ -28,6 +31,7 @@ async def create_upload_file(file: UploadFile):
     img = await file.read()
     file_name = file.filename
     file_ext = file.content_type.split('/')[-1]
+    file_label = os.path.splitext(file_name)[0]
 
     # 디렉토리가 없으면 오류, 코드에서 확인 및 만들기 추가
     upload_dir = os.getenv('UPLOAD_DIR','/home/joo/code/mnist/img')
@@ -40,15 +44,17 @@ async def create_upload_file(file: UploadFile):
     with open(file_full_path, "wb") as f:
         f.write(img)
 
-    sql = "INSERT INTO image_processing(file_name, file_path, request_time, request_user) VALUES(%s, %s, %s, %s)"
+    sql = "INSERT INTO image_processing(file_name,  label, file_path, request_time, request_user) VALUES(%s, %s, %s, %s, %s)"
     import jigeum.seoul 
     from mnist.db import dml
-    insert_row = dml(sql, file_name, file_full_path, jigeum.seoul.now(), 'n72')
+    request_time = jigeum.seoul.now()
+    insert_row = dml(sql, file_name, file_label, file_full_path, request_time, 'n72')
     
     return {
             "filename": file.filename,
             "content_type": file.content_type,
             "file_full_path": file_full_path,
+            "time": jigeum.seoul.now(),
             "insert_row_cont": insert_row
            }
 
@@ -78,4 +84,3 @@ def many(size: int = -1):
             result = cursor.fetchmany(size)
 
     return result
-
